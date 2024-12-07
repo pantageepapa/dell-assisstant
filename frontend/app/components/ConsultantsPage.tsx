@@ -19,7 +19,7 @@ export default function ConsultantsPage() {
       {consultants.map((consultant) => (
         <div
           key={consultant.id}
-          className="flex items-center gap-8 mb-8 p-6 border rounded-lg"
+          className="flex items-center gap-8 mb-8 p-6 border rounded-lg bg-white"
         >
           <Image
             src={consultant.imageUrl}
