@@ -6,15 +6,20 @@ const CornerButton = ({ isExpanded, onClick, children }: {
   onClick: () => void;
   children?: ReactNode;
 }) => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent parent onClick from triggering
+    onClick(); // Only trigger the onClick when the button itself is clicked
+  };
+
   return (
     <div
       className={`fixed bottom-10 right-10 transition-all duration-500 ease-in-out transform origin-bottom-right
         ${isExpanded ? 'w-[94vw] h-[90vh] rounded-lg' : 'w-20 h-20 rounded-[50%]'}
         bg-blue-500 flex items-center justify-center cursor-pointer`}
-      onClick={onClick} // Allow collapsing when the expanded button is clicked
-      role="button" // Accessibility: Role is a button
-      tabIndex={0} // Allow keyboard navigation
-      aria-label={isExpanded ? 'Collapse Chat' : 'Expand Chat'} // Add a dynamic label
+      onClick={handleClick} // Only collapse when clicking the button itself
+      role="button"
+      tabIndex={0}
+      aria-label={isExpanded ? 'Collapse Chat' : 'Expand Chat'}
     >
       {!isExpanded ? (
         <RiChatAiFill size={40} color="white" />
@@ -29,8 +34,8 @@ const CornerButton = ({ isExpanded, onClick, children }: {
               onClick(); // Close the expanded state when the close button is clicked
             }}
             aria-label="Close Chat"
-            role="button" // Accessibility: close button role
-            tabIndex={0} // Allow keyboard navigation for the close button
+            role="button"
+            tabIndex={0}
           >
             <RiCloseCircleFill size={40} color="white" />
           </button>

@@ -11,6 +11,7 @@ const TopNavigationBar = ({ onNavigationChange }: { onNavigationChange: (page: s
   const [value, setValue] = React.useState('text');
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    event.stopPropagation(); // Stop the event from bubbling up and triggering the CornerButton collapse
     setValue(newValue);
     onNavigationChange(newValue);
   };
@@ -28,33 +29,30 @@ const TopNavigationBar = ({ onNavigationChange }: { onNavigationChange: (page: s
         value={value}
         onChange={handleChange}
         showLabels
-        aria-label="Top navigation bar" // Accessibility improvement
+        aria-label="Top navigation bar"
       >
         <BottomNavigationAction
           label="Text Assistant"
           value="text"
           icon={<FaKeyboard />}
-          aria-label="Text Assistant" // Accessibility: Added label for screen readers
         />
         <BottomNavigationAction
           label="Voice Assistant"
           value="voice"
           icon={<MdKeyboardVoice />}
-          aria-label="Voice Assistant" // Accessibility: Added label for screen readers
         />
         <BottomNavigationAction
           label="Virtual Assistant"
           value="virtual"
           icon={<IoPersonCircle />}
-          aria-label="Virtual Assistant" // Accessibility: Added label for screen readers
         />
       </BottomNavigation>
-
+      
       <Box
         sx={{
           position: 'absolute',
           top: '50%',
-          left: 0,
+          left: 20,
           transform: 'translateY(-50%)',
           display: 'flex',
           alignItems: 'center',
