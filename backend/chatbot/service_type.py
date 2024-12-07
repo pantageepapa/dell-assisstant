@@ -1,0 +1,5 @@
+NOT_RELEVANT = "not_relevant"
+GENERAL = "general"
+TECHNICAL_SUPPORT = "technical_support"
+STARTUP_EVENT = "startup_event"
+SCHEDULING = "scheduling"
