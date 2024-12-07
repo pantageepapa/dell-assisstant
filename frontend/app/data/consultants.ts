@@ -27,7 +27,7 @@ export const consultants = [
     id: 4,
     name: "Daniel Krüger",
     expertise: "Natural Language Processing",
-    calendlyUrl: "https://calendly.com/moritz-glowatzki",
+    calendlyUrl: "https://calendly.com/krugerdaniel2000",
     imageUrl: "/images/Daniel.jpeg",
     bio: "Specializing in LLM optimization in business applications",
   },

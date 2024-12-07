@@ -11,11 +11,20 @@ export default function ConsultantsPage() {
     setRootElement(document.body);
   }, []);
 
+  const handleButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event from bubbling up
+  };
+
   if (!rootElement) return null;
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-8">Meet Our Consultants</h1>
+    <div
+      className="max-w-4xl mx-auto p-4 overflow-y-auto h-full"
+      onClick={handleButtonClick}
+    >
+      <h1 className="text-3xl text-white font-bold mb-6 mt-16">
+        Meet Our Consultants
+      </h1>
       {consultants.map((consultant) => (
         <div
           key={consultant.id}
