@@ -1,25 +1,40 @@
+import dotenv
+from fastapi import FastAPI
+
 from waifu import Waifu
 
-def main():
-    waifu = Waifu()
+dotenv.load_dotenv()
+app = FastAPI()
 
-    waifu.initialize(user_input_service='whisper',
-                     stt_duration = None,
-                     mic_index = None,
+waifu = Waifu()
 
-                    chatbot_service='openai',
-                    chatbot_model = None,
-                    chatbot_temperature = None,
-                    personality_file = None,
+waifu.initialize(user_input_service='whisper',
+                 stt_duration=None,
+                 mic_index=None,
 
-                    tts_service='elevenlabs', 
-                    output_device=8,
-                    tts_voice='Rebecca - wide emotional range',
-                    tts_model = None
-                    )
+                 chatbot_service='openai',
+                 chatbot_model=None,
+                 chatbot_temperature=None,
+                 personality_file=None,
 
-    while True:
-        waifu.conversation_cycle()
+                 tts_service='elevenlabs',
+                 output_device=8,
+                 tts_voice='Rebecca - wide emotional range',
+                 tts_model=None
+                 )
 
-if __name__ == "__main__":
-    main()
+
+@app.get('/')
+def index():
+    return "Currently"
+
+@app.get('/waifu/config')
+def connect():
+    return (f'stt_service: {waifu.user_input_service}'
+            f'tts_service: {waifu.tts_service}'
+            f'chatbot_service: {waifu.chatbot_service}')
+
+@app.get('/waifu/generate/text')
+def generate_text(text: str):
+    return 'Work in progress'
+
