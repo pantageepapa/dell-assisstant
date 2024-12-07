@@ -24,8 +24,12 @@ const ChatUI: React.FC = () => {
     setInput('');
   };
 
+  const handleButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event from bubbling up
+  };
+
   return (
-    <div className="chat-container" style={styles.chatContainer}>
+    <div className="chat-container" style={styles.chatContainer} onClick={handleButtonClick}>
       <div className="chat-messages" style={styles.messages}>
         {messages.map((message) => (
           <div
@@ -58,50 +62,52 @@ const ChatUI: React.FC = () => {
 
 const styles = {
   chatContainer: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    width: '300px',
-    height: '400px',
-    border: '1px solid #ccc',
-    borderRadius: '8px',
-    boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-    overflow: 'hidden',
-    backgroundColor: '#fff',
+    display: "flex",
+    flexDirection: "column" as const,
+    width: "90%",
+    height: "calc(100% - 75px)",
+    marginTop: "75px",
+    marginBottom: "20px",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+    overflow: "hidden",
+    backgroundColor: "#fff",
   },
   messages: {
     flex: 1,
-    padding: '10px',
-    overflowY: 'auto' as const,
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '8px',
+    padding: "10px",
+    overflowY: "auto" as const,
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "8px",
   },
   message: {
-    padding: '8px 12px',
-    borderRadius: '18px',
-    maxWidth: '80%',
+    padding: "8px 12px",
+    borderRadius: "18px",
+    maxWidth: "80%",
   },
   inputForm: {
-    display: 'flex',
-    padding: '10px',
-    borderTop: '1px solid #ccc',
-    backgroundColor: '#f9f9f9',
+    display: "flex",
+    padding: "10px",
+    borderTop: "1px solid #ccc",
+    backgroundColor: "#f9f9f9",
   },
   input: {
     flex: 1,
-    padding: '8px',
-    border: '1px solid #ccc',
-    borderRadius: '18px',
-    marginRight: '8px',
-    outline: 'none',
+    padding: "8px",
+    border: "1px solid #ccc",
+    borderRadius: "18px",
+    marginRight: "8px",
+    outline: "none",
   },
   sendButton: {
-    padding: '8px 16px',
-    backgroundColor: '#007bff',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '18px',
-    cursor: 'pointer',
+    padding: "8px 16px",
+    backgroundColor: "#007bff",
+    color: "#fff",
+    border: "none",
+    borderRadius: "18px",
+    cursor: "pointer",
   },
 };
 
