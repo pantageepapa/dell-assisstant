@@ -4,6 +4,7 @@ from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 
 from agent import Agent
+from backend.chatbot.service_type import SCHEDULING
 from backend.crawler.get_company_data import get_company_data
 
 app = FastAPI()
@@ -22,24 +23,22 @@ agent.initialize()
 # Empty message_history.txt file
 open('message_history.txt', 'w').close()
 
-
-@app.get("/chat/text")
-async def chat(message: str, background_tasks: BackgroundTasks):
+def process_message(background_tasks: BackgroundTasks, message = None):
     start = time.time()
     response = agent.conversation_cycle(user_input=message)
     duration = time.time() - start
-    background_tasks.add_task(agent.say, response)
+    if response != SCHEDULING:
+        background_tasks.add_task(agent.say, response)
     return {"response": response, "duration": duration}
+
+@app.get("/chat/text")
+async def chat(message: str, background_tasks: BackgroundTasks):
+    return process_message(background_tasks, message)
 
 
 @app.get("/chat/mic")
 async def chat_mic(background_tasks: BackgroundTasks):
-    start = time.time()
-    response = agent.conversation_cycle()
-    duration = time.time() - start
-    background_tasks.add_task(agent.say, response)
-    return {"response": response, "duration": duration}
-
+    return process_message(background_tasks)
 
 @app.post("/company")
 async def company(company_name: str):

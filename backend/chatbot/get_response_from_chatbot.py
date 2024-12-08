@@ -29,7 +29,7 @@ def get_response_from_chatbot(user_input: str) -> str:
     elif category == STARTUP_EVENT:
         response = send_request_to_startup_event(user_input=user_input)
     elif category == SCHEDULING:
-        response = "scheduling"
+        response = SCHEDULING
     elif category == NOT_RELEVANT:
         response = send_request_to_irrelevant(user_input=user_input)
     else:
