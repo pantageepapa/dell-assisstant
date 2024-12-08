@@ -6,6 +6,7 @@ import CornerButton from "./components/corner-button";
 import ChatUI from "./components/chat-ui";
 import TopNavigationBar from "./components/top-navigation-bar";
 import ConsultantsPage from "./components/ConsultantsPage";
+import VirtualAssistantUI from "./components/virtual-assistant-page";
 import VoiceAssistantPage from "./components/voice-assistant-page";
 
 const Home: React.FC = () => {
@@ -41,7 +42,7 @@ const Home: React.FC = () => {
       case "voice":
         return <VoiceAssistantPage />;
       case "virtual":
-        return <div>Virtual Assistant Content</div>; // Replace with your actual component or content
+        return <VirtualAssistantUI />; // Replace with your actual component or content
       case "consulting":
         return <ConsultantsPage />;
       default:
