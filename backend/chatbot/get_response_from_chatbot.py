@@ -34,7 +34,6 @@ def get_response_from_chatbot(user_input: str) -> str:
         response = send_request_to_irrelevant(user_input=user_input)
     else:
         response = "Sorry, I don't understand. Please try again."
-
     return response
 
 
