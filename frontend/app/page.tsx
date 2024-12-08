@@ -41,7 +41,7 @@ const Home: React.FC = () => {
       case "voice":
         return <VoiceAssistantPage />;
       case "virtual":
-        return <div>Virtual Assistant Content</div>; // Replace with your actual component or content
+        return <div className="text-white text-4xl">Virtual Assistant Content coming soon ...</div>;
       case "consulting":
         return <ConsultantsPage />;
       default:
