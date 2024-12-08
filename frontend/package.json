@@ -11,6 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
+    "@google/model-viewer": "^4.0.0",
     "@mui/material": "^6.1.10",
     "@p5-wrapper/next": "^1.0.3",
     "@p5-wrapper/react": "^4.4.2",
