@@ -8,7 +8,7 @@ const AudioVisualizer: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPlaying, setIsPlaying] = useState(false); // Track playback state
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const audioFilePath = '/resources/Audio-Testfile.MP3';
+  const audioFilePath = '/resources/output.mp3';
 
   useEffect(() => {
     const context = new (window.AudioContext || window.AudioContext)();

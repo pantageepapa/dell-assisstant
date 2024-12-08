@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import AudioVisualizer from './audio-visualizer';
 import Image from 'next/image';
 import { IoIosMic } from "react-icons/io";
-import { IoIosMicOff } from "react-icons/io";
 import { PiRecordFill } from "react-icons/pi";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
+import axios from 'axios';
 
 const VoiceAssistantPage: React.FC = () => {
-  const [status, setStatus] = useState<'welcome' | 'idle' | 'listening' | 'thinking' | 'speaking'>('welcome');
+  const [status, setStatus] = useState<'welcome' | 'idle' | 'listening' | 'speaking'>('welcome');
   const [timer, setTimer] = useState<number>(0); // Timer state for the recording
   const intervalId = useRef<NodeJS.Timeout | null>(null); // Using useRef for intervalId
 
@@ -17,7 +17,7 @@ const VoiceAssistantPage: React.FC = () => {
       if (!intervalId.current) {  // Prevent setting multiple intervals
         intervalId.current = setInterval(() => setTimer((prev) => prev + 1), 1000);
       }
-    } else if (status === 'thinking' || status === 'speaking') {
+    } else if (status === 'speaking') {
       // Clear timer when recording stops
       if (intervalId.current) {
         clearInterval(intervalId.current);
@@ -34,22 +34,29 @@ const VoiceAssistantPage: React.FC = () => {
     };
   }, [status]); // Depend on 'status' only
 
-  const handleRecordClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    // Prevent the click from propagating to the parent element
-    event.stopPropagation();
+  const handleRecordClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation(); // Prevent the click from propagating
 
-    // Toggle between states when the record button is clicked
+    console.log("Current status:", status);  // Log the current status to ensure it's what you expect
+
     if (status === 'welcome' || status === 'idle') {
       setStatus('listening');
+      try {
+        console.log("Starting recording...");
+        const response = await axios.get('http://localhost:8000/chat/mic'); // Start recording API call
+        setTimeout(() => setStatus('speaking'), 30000); // Simulate a 3-second delay
+        console.log("Recording started:", response.data);
+      } catch (error) {
+        console.error('Error starting the recording:', error);
+      }
     } else if (status === 'listening') {
-      setStatus('thinking');
-    } else if (status === 'thinking') {
       setStatus('speaking');
     } else if (status === 'speaking') {
       setStatus('idle');
     }
   };
 
+  
   return (
     <div className="relative w-full h-screen overflow-hidden rounded-lg">
       {/* Background Image with Rounded Corners */}
@@ -95,7 +102,6 @@ const VoiceAssistantPage: React.FC = () => {
           {status === 'welcome' && 'Start the conversation with Adell:'}
           {status === 'idle' && 'Continue the conversation:'}
           {status === 'listening' && `Listening... (${timer}s)`}
-          {status === 'thinking' && 'Thinking...'}
           {status === 'speaking' && 'Speaking...'}
         </div>
 
@@ -108,8 +114,8 @@ const VoiceAssistantPage: React.FC = () => {
           >
             {status === 'listening' ? (
               <IoIosMic size={24} color='white' />
-            ) : status === 'thinking' ? (
-              <IoIosMicOff size={24} color='white' />
+            // ) : status === 'thinking' ? (
+            //   <IoIosMicOff size={24} color='white' />
             ) : status === 'speaking' ? (
               <HiMiniSpeakerWave size={24} color='white' />
             ) : (

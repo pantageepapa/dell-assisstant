@@ -34,6 +34,7 @@ class Agent:
 
         # Setup ElevenLabs if needed
         load_dotenv()
+        openai.api_key = getenv("OPENAI_API_KEY")
         set_api_key(getenv("ELEVENLABS_API_KEY"))
 
     def get_user_input_mic(self) -> str:
@@ -64,12 +65,12 @@ class Agent:
 
             # Handle ElevenLabs output
             audio = generate(text=text, voice=self.tts_voice, model=self.tts_model)
-            save(audio, "output.mp3")
+            save(audio, "../../public/resources/output.mp3")
 
-            # Play the audio
-            data, fs = sf.read("output.mp3")
-            sd.play(data, fs)
-            sd.wait()
+            # # Play the audio
+            # data, fs = sf.read("output.mp3")
+            # sd.play(data, fs)
+            # sd.wait()
         except Exception as e:
             print(f"TTS error: {e}")
             print("\n\33[7m" + "Assistant:" + "\33[0m" + f" {text}")
