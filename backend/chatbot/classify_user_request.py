@@ -11,7 +11,6 @@ import json
 OUTPUT_CATEGORIES: list = [
     NOT_RELEVANT,
     GENERAL,
-    TECHNICAL_SUPPORT,
     STARTUP_EVENT,
     SCHEDULING,
 ]
