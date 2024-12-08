@@ -28,10 +28,12 @@ STARTUP_EVENTS = [
 PROMPT: str = (
     "You are responsible for answering questions about startup events at DELL. Here are the upcoming events: {event_json}."
     "Help the customer by answering their question: {user_input}. Keep your response clear and concise."
+    "Chat history: {message_history}"
+    "User: {user_input}"
 )
 
 
-def send_request_to_startup_event(user_input: str) -> str:
+def send_request_to_startup_event(user_input: str, message_history) -> str:
     """
     Send a user request to the customer service chatbot and get a response.
 
@@ -43,7 +45,7 @@ def send_request_to_startup_event(user_input: str) -> str:
     """
     # Format the prompt with the user input
     formatted_prompt = PROMPT.format(
-        user_input=user_input, event_json=json.dumps(STARTUP_EVENTS)
+        user_input=user_input, event_json=json.dumps(STARTUP_EVENTS), message_history=message_history
     )
     print(formatted_prompt)
     # Get response from OpenAI
