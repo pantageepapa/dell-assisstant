@@ -10,19 +10,46 @@ const ChatUI: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (input.trim() === '') return;
+  const handleSubmit = async (e: FormEvent) => {
+  e.preventDefault();
+  if (input.trim() === '') return;
 
-    const newMessage: Message = {
-      id: messages.length + 1,
-      text: input,
-      sender: 'user',
-    };
-
-    setMessages([...messages, newMessage]);
-    setInput('');
+  // Add user message
+  const userMessage: Message = {
+    id: messages.length + 1,
+    text: input,
+    sender: 'user',
   };
+  setMessages(prev => [...prev, userMessage]);
+  setInput('');
+
+  try {
+    // Use URLSearchParams for query parameters
+    const queryParams = new URLSearchParams({ message: input });
+    const response = await fetch(
+      `http://localhost:8000/chat/text?${queryParams}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    // Add bot response
+    const botMessage: Message = {
+      id: messages.length + 2,
+      text: data.response,
+      sender: "bot",
+    };
+    setMessages((prev) => [...prev, botMessage]);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 
   const handleButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent event from bubbling up
