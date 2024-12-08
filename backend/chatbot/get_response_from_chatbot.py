@@ -34,8 +34,10 @@ def get_response_from_chatbot(user_input: str, company: CompanyData = None) -> s
         response = send_request_to_startup_event(user_input=user_input)
     elif category == SCHEDULING:
         if company:
+            # If the company is provided, classify the industry
             response = classify_industry_of_company(company=company)
         else:
+            # Otherwise, return a general response
             response = "General"
     elif category == NOT_RELEVANT:
         response = send_request_to_irrelevant(user_input=user_input)
