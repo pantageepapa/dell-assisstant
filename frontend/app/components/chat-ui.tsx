@@ -95,7 +95,7 @@ const ChatUI: React.FC = () => {
           consultantId: 4  // Daniel's ID
         };
       } else if (data.response === "General") {
-        return { text: "I'll help you schedule a meeting with one of our consultants." ,
+        return { text: "I'll help you schedule a meeting with one of our generalist consultants." ,
            calendar: true,
           consultantId: 4  // Daniel's ID
         };

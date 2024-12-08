@@ -7,7 +7,7 @@ OUTPUT_CATEGORIES: list = [
     "Healthcare",
     "Finance",
     "Technology",
-    "Irrelevant",
+    "General",
 ]
 PROMPT: str = (
     f"Classify the following industry into one of these categories: {OUTPUT_CATEGORIES}. "
