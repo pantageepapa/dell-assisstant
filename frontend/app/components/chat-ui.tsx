@@ -149,7 +149,7 @@ const ChatUI: React.FC = () => {
                 ...styles.message,
                 marginLeft: message.sender === 'user' ? 'auto' : '0',
                 marginRight: message.sender === 'bot' ? 'auto' : '0',
-                backgroundColor: message.sender === 'user' ? '#d1f7c4' : '#f1f1f1',
+                backgroundColor: message.sender === 'user' ? '#9fc5e8' : '#f1f1f1',
               }}
             >
               {message.text}
