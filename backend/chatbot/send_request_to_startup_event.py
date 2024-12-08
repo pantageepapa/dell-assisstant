@@ -47,7 +47,7 @@ def send_request_to_startup_event(user_input: str) -> str:
     )
     print(formatted_prompt)
     # Get response from OpenAI
-    response: str = send_prompt_to_openai(prompt=formatted_prompt, model="")
+    response: str = send_prompt_to_openai(prompt=formatted_prompt)
 
     return response
 
