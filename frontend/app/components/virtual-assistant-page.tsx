@@ -78,7 +78,7 @@ export default function VirtualAssistantUI() {
                   alignSelf:
                     message.sender === "user" ? "flex-end" : "flex-start",
                   backgroundColor:
-                    message.sender === "user" ? "#d1f7c4" : "#f1f1f1",
+                    message.sender === "user" ? "#9fc5e8" : "#f1f1f1",
                 }}
               >
                 {message.text}
