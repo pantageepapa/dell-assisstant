@@ -8,7 +8,7 @@ const AudioVisualizer: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPlaying, setIsPlaying] = useState(false); // Track playback state
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const audioFilePath = '/resources/Audio-Testfile.MP3';
+  const audioFilePath = '/resources/Audio-Testfile.mp3';
 
   useEffect(() => {
     const context = new (window.AudioContext || window.AudioContext)();
@@ -77,7 +77,7 @@ const AudioVisualizer: React.FC = () => {
             canvasCtx.clearRect(0, 0, width, height);
 
             const barWidth = (2 * Math.PI) / bufferLength;
-            let angle = 33.7;
+            let angle = 33.8;
 
             for (let i = 0; i < bufferLength; i++) {
               const barHeight = dataArray[i];
