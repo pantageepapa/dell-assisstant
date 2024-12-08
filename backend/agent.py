@@ -1,14 +1,14 @@
+from json import dump
+from os import getenv
+
 import openai
-import speech_recognition as sr
-from elevenlabs import generate, save, set_api_key
 import sounddevice as sd
 import soundfile as sf
+import speech_recognition as sr
 from dotenv import load_dotenv
-from os import getenv
-from json import dump
+from elevenlabs import generate, save, set_api_key
 
 from crawler.company_dataclass import CompanyData
-from crawler.get_company_data import get_company_data
 
 
 class Agent:
@@ -24,7 +24,7 @@ class Agent:
         self.company: CompanyData = None
 
     def initialize(
-        self,
+            self,
     ) -> None:
         """Initialize the agent with input and output services."""
 
@@ -74,23 +74,15 @@ class Agent:
             print(f"TTS error: {e}")
             print("\n\33[7m" + "Assistant:" + "\33[0m" + f" {text}")
 
-    def conversation_cycle(self, user_input=None) -> str:
+    def conversation_cycle(self, user_input=None, company_name=None) -> str:
         """Run one conversation cycle."""
         from chatbot.get_response_from_chatbot import get_response_from_chatbot
 
         # Ask user for industry and stage if not set
-        if not self.company_name:
-            self.say(
-                "Hey there, I will help you with answering any questions regarding the startup program at DELL."
-                "In order to do that, I need to know more about your startup. What is the name of your startup?"
-            )
-            self.company_name = self.get_user_input()
-            self.company = get_company_data(self.company_name)
-            self.message_history.append({"role": "user", "content": self.company_name})
+        if self.company:
+            # Do something with the company data
+            print('Do something with the company data')
 
-        print(f"Company: {self.company_name}")
-        print(f"Data: {self.company}")
-        user_input = self.get_user_input()
         self.message_history.append({"role": "user", "content": user_input})
 
         if user_input:
