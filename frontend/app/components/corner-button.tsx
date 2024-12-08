@@ -44,5 +44,4 @@ const CornerButton = ({ isExpanded, onClick, children }: {
     </div>
   );
 };
-
 export default CornerButton;

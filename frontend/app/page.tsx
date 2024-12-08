@@ -7,6 +7,7 @@ import ChatUI from "./components/chat-ui";
 import TopNavigationBar from "./components/top-navigation-bar";
 import ConsultantsPage from "./components/ConsultantsPage";
 import VirtualAssistantUI from "./components/virtual-assistant-page";
+import VoiceAssistantPage from "./components/voice-assistant-page";
 
 const Home: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -20,10 +21,9 @@ const Home: React.FC = () => {
         // When expanding, set the delay for ChatUI to appear
         setTimeout(() => {
           setShowChatUI(true);
-        }, 100); // Delay
+        }, 200); // Delay
       } else {
-        // When collapsing, hide ChatUI immediately
-        setShowChatUI(false);
+        setActivePage("text"); // Reset active page to "text" when collapsing
       }
       return newState;
     });
@@ -40,7 +40,7 @@ const Home: React.FC = () => {
       case "text":
         return <ChatUI />;
       case "voice":
-        return <div>Voice Assistant Content</div>; // Replace with your actual component or content
+        return <VoiceAssistantPage />;
       case "virtual":
         return <VirtualAssistantUI />; // Replace with your actual component or content
       case "consulting":

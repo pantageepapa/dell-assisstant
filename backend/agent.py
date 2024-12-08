@@ -1,3 +1,4 @@
+import json
 from json import dump
 from os import getenv
 
@@ -8,6 +9,7 @@ import speech_recognition as sr
 from dotenv import load_dotenv
 from elevenlabs import generate, save, set_api_key
 
+from chatbot.get_response_from_chatbot import get_response_from_chatbot
 from crawler.company_dataclass import CompanyData
 
 
@@ -58,11 +60,9 @@ class Agent:
     def say(self, text: str) -> int:
         """Output text through selected service."""
         try:
-            if self.user_output_service == "console":
-                print("\n\33[7m" + "Assistant:" + "\33[0m" + f" {text}")
-                return
-
+            text = text.replace("*", "")
             # Handle ElevenLabs output
+            print("Generating TTS...")
             audio = generate(text=text, voice=self.tts_voice, model=self.tts_model)
             save(audio, "output.mp3")
 
@@ -76,16 +76,18 @@ class Agent:
 
     def conversation_cycle(self, user_input=None, company_name=None) -> str:
         """Run one conversation cycle."""
-        from chatbot.get_response_from_chatbot import get_response_from_chatbot
+        if user_input is None:
+            user_input = self.get_user_input_mic()
+
+        response = get_response_from_chatbot(
+            user_input=user_input,
+            company=self.company,
+            message_history="".join(json.dumps(self.message_history)),
+        )
 
         self.message_history.append({"role": "user", "content": user_input})
-
-        if user_input:
-            response = get_response_from_chatbot(
-                user_input=user_input, company=self.company
-            )
-            self.message_history.append({"role": "assistant", "content": response})
-            return response
+        self.message_history.append({"role": "assistant", "content": response})
+        return response
 
     def save_history(self) -> None:
         """Save conversation history to file."""

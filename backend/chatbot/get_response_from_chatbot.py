@@ -10,14 +10,14 @@ from .service_type import (
     STARTUP_EVENT,
 )
 
-from crawler.company_dataclass import CompanyData
 
 
-def get_response_from_chatbot(user_input: str, company: CompanyData = None) -> str:
+def get_response_from_chatbot(user_input: str, message_history: str, company = None) -> str:
     """
     Get a response from the chatbot by sending a user input.
 
     Args:
+        message_history:
         user_input (str): The user's input text to send to the chatbot
 
     Returns:
@@ -29,9 +29,9 @@ def get_response_from_chatbot(user_input: str, company: CompanyData = None) -> s
     print(f"Category: {category}")
 
     if category == GENERAL:
-        response = send_request_to_customer_service(user_input=user_input)
+        response = send_request_to_customer_service(user_input=user_input, company=company, message_history=message_history)
     elif category == STARTUP_EVENT:
-        response = send_request_to_startup_event(user_input=user_input)
+        response = send_request_to_startup_event(user_input=user_input, message_history=message_history)
     elif category == SCHEDULING:
         if company:
             # If the company is provided, classify the industry
@@ -40,7 +40,7 @@ def get_response_from_chatbot(user_input: str, company: CompanyData = None) -> s
             # Otherwise, return a general response
             response = "General"
     elif category == NOT_RELEVANT:
-        response = send_request_to_irrelevant(user_input=user_input)
+        response = send_request_to_irrelevant(user_input=user_input, message_history=message_history)
     else:
         response = "Sorry, I don't understand. Please try again."
 
