@@ -36,6 +36,10 @@ def process_message(background_tasks: BackgroundTasks = None, message=None):
 async def chat(message: str):
     return process_message(message=message)
 
+@app.get("/chat/virtual")
+async def chat_virtual(message: str, background_tasks: BackgroundTasks):
+    return process_message(message=message, background_tasks=background_tasks)
+
 
 @app.get("/chat/mic")
 async def chat_mic(background_tasks: BackgroundTasks):

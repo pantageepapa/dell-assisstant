@@ -33,7 +33,7 @@ export default function VirtualAssistantUI() {
       // Get bot response
       const queryParams = new URLSearchParams({ message: input });
       const response = await fetch(
-        `http://localhost:8000/chat/text?${queryParams}`
+        `http://localhost:8000/chat/virtual?${queryParams}`
       );
       const data = await response.json();
 
