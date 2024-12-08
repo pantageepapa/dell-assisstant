@@ -25,34 +25,19 @@ class Agent:
 
     def initialize(
         self,
-        user_input_service: str = "console",
-        user_output_service: str = "console",
     ) -> None:
         """Initialize the agent with input and output services."""
-        # Validate services
-        if user_input_service not in {"whisper", "console"}:
-            raise ValueError("Input service must be either 'whisper' or 'console'")
-        if user_output_service not in {"elevenlabs", "console"}:
-            raise ValueError("Output service must be either 'elevenlabs' or 'console'")
-
-        # Initialize services
-        self.user_input_service = user_input_service
-        self.user_output_service = user_output_service
 
         # Setup speech recognition if needed
-        if user_input_service == "whisper":
-            self.mic = sr.Microphone()
-            self.recogniser = sr.Recognizer()
+        self.mic = sr.Microphone()
+        self.recogniser = sr.Recognizer()
 
         # Setup ElevenLabs if needed
-        if user_output_service == "elevenlabs":
-            load_dotenv()
-            set_api_key(getenv("ELEVENLABS_API_KEY"))
+        load_dotenv()
+        set_api_key(getenv("ELEVENLABS_API_KEY"))
 
-    def get_user_input(self) -> str:
+    def get_user_input_mic(self) -> str:
         """Get user input through selected service."""
-        if self.user_input_service == "console":
-            return input("\n\33[42m" + "User:" + "\33[0m" + " ")
 
         # Handle speech input with Whisper
         with self.mic as source:
@@ -89,7 +74,7 @@ class Agent:
             print(f"TTS error: {e}")
             print("\n\33[7m" + "Assistant:" + "\33[0m" + f" {text}")
 
-    def conversation_cycle(self) -> None:
+    def conversation_cycle(self, user_input=None) -> str:
         """Run one conversation cycle."""
         from chatbot.get_response_from_chatbot import get_response_from_chatbot
 
@@ -112,6 +97,7 @@ class Agent:
             response = get_response_from_chatbot(user_input)
             self.say(response)
             self.message_history.append({"role": "assistant", "content": response})
+            return response
 
     def save_history(self) -> None:
         """Save conversation history to file."""

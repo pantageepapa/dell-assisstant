@@ -1,14 +1,12 @@
 from .classify_user_request import classify_user_request
 from .send_request_to_customer_service import send_request_to_customer_service
-from .send_request_to_startup_event import send_request_to_startup_event
-from .send_request_to_technical_support import send_request_to_technical_support
 from .send_request_to_irrelevant import send_request_to_irrelevant
+from .send_request_to_startup_event import send_request_to_startup_event
 from .service_type import (
     GENERAL,
     NOT_RELEVANT,
     SCHEDULING,
     STARTUP_EVENT,
-    TECHNICAL_SUPPORT,
 )
 
 
@@ -30,15 +28,12 @@ def get_response_from_chatbot(user_input: str) -> str:
         response = send_request_to_customer_service(user_input=user_input)
     elif category == STARTUP_EVENT:
         response = send_request_to_startup_event(user_input=user_input)
-    elif category == TECHNICAL_SUPPORT:
-        response = send_request_to_technical_support(user_input=user_input)
     elif category == SCHEDULING:
         response = "Sure, let's schedule a meeting. When are you available?"
     elif category == NOT_RELEVANT:
         response = send_request_to_irrelevant(user_input=user_input)
     else:
         response = "Sorry, I don't understand. Please try again."
-
     return response
 
 
