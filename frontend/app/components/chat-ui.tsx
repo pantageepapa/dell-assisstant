@@ -1,9 +1,14 @@
+"use client";
+
 import React, { useState, FormEvent } from 'react';
+import EmbeddedCalendar from './EmbeddedCalendar';
 
 interface Message {
   id: number;
   text: string;
   sender: 'user' | 'bot';
+  calendar?: boolean;
+  consultantId?: number;
 }
 
 const initialMessages: Message[] = [
@@ -21,7 +26,7 @@ const ChatUI: React.FC = () => {
 
   const handleStartupNameSubmission = async (startupName: string) => {
     try {
-      fetch(
+      const response = await fetch(
         `http://127.0.0.1:8000/company?company_name=${encodeURIComponent(startupName)}`,
         {
           method: "POST",
@@ -32,10 +37,11 @@ const ChatUI: React.FC = () => {
         }
       );
 
-      return "Thank you! How can I help you?";
+      await response.json();
+      return { text: "Thank you! How can I help you?" };
     } catch (error) {
       console.error("Error submitting startup name:", error);
-      return "I encountered an error processing your startup name. Could you please try again?";
+      return { text: "I encountered an error processing your startup name. Could you please try again?" };
     }
   };
 
@@ -45,16 +51,14 @@ const ChatUI: React.FC = () => {
       setIsAwaitingStartupName(false);
       return response;
     } else {
-      // Check if the user's response indicates they have a startup
       const lowerInput = userInput.toLowerCase();
       if (lowerInput.includes('yes') || lowerInput.includes('yeah') || lowerInput.includes('yep') || lowerInput.includes('sure')) {
         setIsAwaitingStartupName(true);
-        return "What is the name of your startup?";
+        return { text: "What is the name of your startup?" };
       } else if (lowerInput.includes('no') || lowerInput.includes('nope') || lowerInput.includes('nah')) {
-        return "That's okay! How can I help you?";
+        return { text: "I am here to help you with other things as well!" };
       }
       
-      // Default flow for other responses
       const queryParams = new URLSearchParams({ message: userInput });
       const response = await fetch(
         `http://localhost:8000/chat/text?${queryParams}`,
@@ -66,7 +70,40 @@ const ChatUI: React.FC = () => {
         }
       );
       const data = await response.json();
-      return data.response;
+      
+      // Match consultant based on response
+      if (data.response === "Healthcare") {
+        return { 
+          text: "I'll help you schedule a meeting with our Digital Health expert.", 
+          calendar: true,
+          consultantId: 1  // Elsa's ID
+        };
+      } else if (data.response === "Finance") {
+        return { 
+          text: "I'll help you schedule a meeting with our Finance expert.", 
+          calendar: true,
+          consultantId: 2  // Jaeyoon's ID
+        };
+      } else if (data.response === "Design") {
+        return {
+          text: "I'll help you schedule a meeting with our Design expert.",
+          calendar: true,
+          consultantId: 3  // Moritz's ID
+        };
+      } else if (data.response === "Technology") {
+        return {
+          text: "I'll help you schedule a meeting with our Technology expert.",
+          calendar: true,
+          consultantId: 4  // Daniel's ID
+        };
+      } else if (data.response === "General") {
+        return { text: "I'll help you schedule a meeting with one of our consultants." ,
+           calendar: true,
+          consultantId: 4  // Daniel's ID
+        };
+      }
+      
+      return { text: data.response };
     }
   };
 
@@ -74,7 +111,6 @@ const ChatUI: React.FC = () => {
     e.preventDefault();
     if (input.trim() === '') return;
 
-    // Add user message
     const userMessage: Message = {
       id: messages.length + 1,
       text: input,
@@ -86,11 +122,12 @@ const ChatUI: React.FC = () => {
     try {
       const botResponse = await processResponse(input);
       
-      // Add bot response
       const botMessage: Message = {
         id: messages.length + 2,
-        text: botResponse,
+        text: botResponse.text,
         sender: "bot",
+        calendar: botResponse.calendar,
+        consultantId: botResponse.consultantId
       };
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
@@ -106,18 +143,26 @@ const ChatUI: React.FC = () => {
     <div className="chat-container" style={styles.chatContainer} onClick={handleButtonClick}>
       <div className="chat-messages" style={styles.messages}>
         {messages.map((message) => (
-          <div
-            key={message.id}
-            style={{
-              ...styles.message,
-              alignSelf: message.sender === 'user' ? 'flex-end' : 'flex-start',
-              backgroundColor: message.sender === 'user' ? '#d1f7c4' : '#f1f1f1',
-            }}
-          >
-            {message.text}
+          <div key={message.id} style={styles.messageContainer}>
+            <div
+              style={{
+                ...styles.message,
+                marginLeft: message.sender === 'user' ? 'auto' : '0',
+                marginRight: message.sender === 'bot' ? 'auto' : '0',
+                backgroundColor: message.sender === 'user' ? '#d1f7c4' : '#f1f1f1',
+              }}
+            >
+              {message.text}
+            </div>
+            {message.calendar && message.consultantId && (
+              <div style={styles.calendar}>
+                <EmbeddedCalendar consultantId={message.consultantId} />
+              </div>
+            )}
           </div>
         ))}
       </div>
+
       <form onSubmit={handleSubmit} style={styles.inputForm}>
         <input
           type="text"
@@ -150,38 +195,58 @@ const styles = {
   },
   messages: {
     flex: 1,
-    padding: "10px",
+    padding: "20px",
     overflowY: "auto" as const,
     display: "flex",
     flexDirection: "column" as const,
-    gap: "8px",
+    gap: "16px",
+  },
+  messageContainer: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column" as const,
+    alignItems: "flex-start",
   },
   message: {
-    padding: "8px 12px",
-    borderRadius: "18px",
-    maxWidth: "80%",
+    display: "inline-block",
+    maxWidth: "60%",
+    padding: "12px 16px",
+    borderRadius: "20px",
+    marginBottom: "4px",
+    wordBreak: "break-word" as const,
+  },
+  calendar: {
+    width: "100%",
+    marginTop: "12px",
+    marginBottom: "16px",
+    border: "1px solid #eee",
+    borderRadius: "8px",
+    overflow: "hidden",
   },
   inputForm: {
     display: "flex",
-    padding: "10px",
-    borderTop: "1px solid #ccc",
-    backgroundColor: "#f9f9f9",
+    padding: "16px",
+    borderTop: "1px solid #eee",
+    backgroundColor: "#fff",
+    gap: "12px",
   },
   input: {
     flex: 1,
-    padding: "8px",
-    border: "1px solid #ccc",
-    borderRadius: "18px",
-    marginRight: "8px",
+    padding: "12px 20px",
+    border: "1px solid #ddd",
+    borderRadius: "24px",
+    fontSize: "16px",
     outline: "none",
   },
   sendButton: {
-    padding: "8px 16px",
-    backgroundColor: "#007bff",
+    padding: "12px 24px",
+    backgroundColor: "#4285f4",
     color: "#fff",
     border: "none",
-    borderRadius: "18px",
+    borderRadius: "24px",
     cursor: "pointer",
+    fontSize: "16px",
+    fontWeight: "500",
   },
 };
 
