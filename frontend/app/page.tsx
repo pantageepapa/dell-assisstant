@@ -6,6 +6,7 @@ import CornerButton from "./components/corner-button";
 import ChatUI from "./components/chat-ui";
 import TopNavigationBar from "./components/top-navigation-bar";
 import ConsultantsPage from "./components/ConsultantsPage";
+import VoiceAssistantPage from "./components/voice-assistant-page";
 
 const Home: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -16,31 +17,29 @@ const Home: React.FC = () => {
     setIsExpanded((prevState) => {
       const newState = !prevState;
       if (newState) {
+        // When expanding, set the delay for ChatUI to appear
         setTimeout(() => {
           setShowChatUI(true);
-        }, 100); // Delay
+        }, 200); // Delay
       } else {
-        setShowChatUI(false);
+        setActivePage("text"); // Reset active page to "text" when collapsing
       }
       return newState;
     });
   };
 
-  const handleCloseClick = () => {
-    setIsExpanded(false);
-    setShowChatUI(false);
-  };
-
+  // Handle navigation change
   const handleNavigationChange = (newPage: string) => {
     setActivePage(newPage); // Update active page based on navigation selection
   };
 
+  // Render different content based on activePage
   const renderPageContent = () => {
     switch (activePage) {
       case "text":
         return <ChatUI />;
       case "voice":
-        return <div>Voice Assistant Content</div>; // Replace with your actual component or content
+        return <VoiceAssistantPage />;
       case "virtual":
         return <div>Virtual Assistant Content</div>; // Replace with your actual component or content
       case "consulting":
@@ -50,25 +49,9 @@ const Home: React.FC = () => {
     }
   };
 
-  // Close the expanded button if a click happens outside of the button
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
-        setIsExpanded(false);
-        setShowChatUI(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
   return (
     <LandingPage>
-      <CornerButton isExpanded={isExpanded} onClick={handleClick} onCloseClick={handleCloseClick}>
+      <CornerButton isExpanded={isExpanded} onClick={handleClick}>
         {showChatUI && (
           <>
             <TopNavigationBar onNavigationChange={handleNavigationChange} />
