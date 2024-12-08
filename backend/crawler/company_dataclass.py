@@ -6,18 +6,6 @@ from typing import Dict, Any
 
 
 @dataclass
-class Update:
-    likes_count: int
-    text: str
-    time: str
-    title: str
-    comments_count: int
-    post_url: str
-    post_id: str
-    images: Optional[List[str]] = None
-
-
-@dataclass
 class CompanyData:
     name: str
     locations: List[str]
@@ -35,7 +23,7 @@ class CompanyData:
     logo: str
     similar: List[Dict[str, Any]]
     url: str
-    updates: List[Update]
+    updates: List[Dict[str, Any]]
     funding: Optional[Dict[str, Any]]
     investors: Optional[List[str]]
     description: str
@@ -59,19 +47,7 @@ class CompanyData:
         similar = [comp for comp in snapshot.get("similar", [])]
 
         # Handle updates
-        updates = [
-            Update(
-                likes_count=update["likes_count"],
-                text=update["text"],
-                time=update["time"],
-                title=update["title"],
-                comments_count=update["comments_count"],
-                post_url=update["post_url"],
-                post_id=update["post_id"],
-                images=update.get("images"),
-            )
-            for update in snapshot.get("updates", [])
-        ]
+        updates = [update for update in snapshot.get("updates", [])]
 
         return cls(
             name=snapshot["name"],
