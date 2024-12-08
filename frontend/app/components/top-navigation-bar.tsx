@@ -4,6 +4,7 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import { FaKeyboard } from "react-icons/fa";
 import { MdKeyboardVoice } from "react-icons/md";
 import { IoPersonCircle } from "react-icons/io5";
+import { SiGooglemeet } from "react-icons/si";
 import { Box } from '@mui/material';
 import Image from 'next/image';
 
@@ -17,14 +18,16 @@ const TopNavigationBar = ({ onNavigationChange }: { onNavigationChange: (page: s
   };
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 100 }}>
+    <div
+      style={{ position: "fixed", top: 0, left: 0, width: "100%", zIndex: 100 }}
+    >
       <BottomNavigation
         sx={{
-          width: '100%',
+          width: "100%",
           boxShadow: 10,
-          position: 'relative',
-          borderTopLeftRadius: '8px', // Only round top-left corner
-          borderTopRightRadius: '8px', // Only round top-right corner
+          position: "relative",
+          borderTopLeftRadius: "8px", // Only round top-left corner
+          borderTopRightRadius: "8px", // Only round top-right corner
         }}
         value={value}
         onChange={handleChange}
@@ -46,16 +49,21 @@ const TopNavigationBar = ({ onNavigationChange }: { onNavigationChange: (page: s
           value="virtual"
           icon={<IoPersonCircle />}
         />
+        <BottomNavigationAction
+          label="1:1 Consulting"
+          value="consulting"
+          icon={<SiGooglemeet />}
+        />
       </BottomNavigation>
-      
+
       <Box
         sx={{
-          position: 'absolute',
-          top: '50%',
+          position: "absolute",
+          top: "50%",
           left: 20,
-          transform: 'translateY(-50%)',
-          display: 'flex',
-          alignItems: 'center',
+          transform: "translateY(-50%)",
+          display: "flex",
+          alignItems: "center",
           zIndex: 1, // Make sure logo stays above navigation bar
         }}
       >

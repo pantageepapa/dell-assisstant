@@ -1,40 +1,31 @@
-import dotenv
+import time
+
 from fastapi import FastAPI
 
-from waifu import Waifu
+from agent import Agent
 
-dotenv.load_dotenv()
 app = FastAPI()
 
-waifu = Waifu()
+agent = Agent()
 
-waifu.initialize(user_input_service='whisper',
-                 stt_duration=None,
-                 mic_index=None,
+agent.initialize()
 
-                 chatbot_service='openai',
-                 chatbot_model=None,
-                 chatbot_temperature=None,
-                 personality_file=None,
-
-                 tts_service='elevenlabs',
-                 output_device=8,
-                 tts_voice='Rebecca - wide emotional range',
-                 tts_model=None
-                 )
+# Empty message_history.txt file
+open('message_history.txt', 'w').close()
 
 
-@app.get('/')
-def index():
-    return "Currently"
+@app.get("/chat/text")
+async def chat(message: str):
+    start = time.time()
+    response = agent.conversation_cycle(message)
+    duration = time.time() - start
+    return {"response": response, "duration": duration}
 
-@app.get('/waifu/config')
-def connect():
-    return (f'stt_service: {waifu.user_input_service}'
-            f'tts_service: {waifu.tts_service}'
-            f'chatbot_service: {waifu.chatbot_service}')
+@app.get("/chat/mic")
+async def chat_mic():
+    start = time.time()
+    response = agent.conversation_cycle()
+    duration = time.time() - start
+    return {"response": response, "duration": duration}
 
-@app.get('/waifu/generate/text')
-def generate_text(text: str):
-    return 'Work in progress'
 

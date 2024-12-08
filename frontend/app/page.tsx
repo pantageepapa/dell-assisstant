@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import LandingPage from './components/landing-page';
-import CornerButton from './components/corner-button';
-import TopNavigationBar from './components/top-navigation-bar';
-import AudioVisualizer from './components/audio-visualizer';
+import React, { useState } from "react";
+import LandingPage from "./components/landing-page";
+import CornerButton from "./components/corner-button";
+import ChatUI from "./components/chat-ui";
+import TopNavigationBar from "./components/top-navigation-bar";
+import ConsultantsPage from "./components/ConsultantsPage";
 
 const Home: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showChatUI, setShowChatUI] = useState(false);
-  const [activePage, setActivePage] = useState('text'); // Track the active page
-  const buttonRef = useRef<HTMLButtonElement | null>(null); // Ref for CornerButton
+  const [activePage, setActivePage] = useState("text"); // Track the active page
 
   const handleClick = () => {
     setIsExpanded((prevState) => {
@@ -37,14 +37,14 @@ const Home: React.FC = () => {
 
   const renderPageContent = () => {
     switch (activePage) {
-      case 'text':
-        return <div>Text Assistant Content</div>;
-      case 'voice':
-        return <AudioVisualizer />; // This renders your visualizer
-      case 'virtual':
-        return <div>Virtual Assistant Content</div>;
-      case 'scheduling':
-        return <div>Scheduling Content</div>;
+      case "text":
+        return <ChatUI />;
+      case "voice":
+        return <div>Voice Assistant Content</div>; // Replace with your actual component or content
+      case "virtual":
+        return <div>Virtual Assistant Content</div>; // Replace with your actual component or content
+      case "consulting":
+        return <ConsultantsPage />;
       default:
         return <div>Default Content</div>;
     }

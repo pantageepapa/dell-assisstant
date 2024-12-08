@@ -16,6 +16,7 @@
     "@p5-wrapper/react": "^4.4.2",
     "audiomotion-analyzer": "^4.5.0",
     "mui": "^0.0.1",
+    "react-calendly": "^4.3.1",
     "next": "15.0.4",
     "p5": "^1.11.2",
     "p5.sound": "^0.1.0",
