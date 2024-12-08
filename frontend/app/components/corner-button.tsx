@@ -1,14 +1,20 @@
 import React, { ReactNode } from 'react';
 import { RiChatAiFill, RiCloseCircleFill } from 'react-icons/ri';
 
-const CornerButton = ({ isExpanded, onClick, children }: {
+const CornerButton = ({ isExpanded, onClick, onCloseClick, children }: {
   isExpanded: boolean;
   onClick: () => void;
+  onCloseClick: () => void;  // Added for close button click handler
   children?: ReactNode;
 }) => {
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent parent onClick from triggering
-    onClick(); // Only trigger the onClick when the button itself is clicked
+    onClick(); // Trigger the onClick when the button is clicked
+  };
+
+  const handleCloseClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent parent onClick from triggering
+    onCloseClick(); // Close when the close button inside expanded state is clicked
   };
 
   return (
@@ -29,10 +35,7 @@ const CornerButton = ({ isExpanded, onClick, children }: {
 
           <button
             className="absolute bottom-4 right-4"
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent parent click handler from triggering
-              onClick(); // Close the expanded state when the close button is clicked
-            }}
+            onClick={handleCloseClick} // Close the expanded state when the close button is clicked
             aria-label="Close Chat"
             role="button"
             tabIndex={0}
