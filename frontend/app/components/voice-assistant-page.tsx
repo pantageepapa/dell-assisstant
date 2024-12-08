@@ -42,7 +42,7 @@ const VoiceAssistantPage: React.FC = () => {
       setStatus('listening');
       try {
         await axios.get('http://localhost:8000/chat/mic'); // Start recording API call
-        setTimeout(() => setStatus('speaking'), 1000); // Simulate a 1-second delay
+        setTimeout(() => setStatus('speaking'), 2000); // Simulate a 1-second delay
       } catch (error) {
         console.error('Error starting the recording:', error);
       }
