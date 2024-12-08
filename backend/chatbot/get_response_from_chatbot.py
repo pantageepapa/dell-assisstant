@@ -2,6 +2,7 @@ from .classify_user_request import classify_user_request
 from .send_request_to_customer_service import send_request_to_customer_service
 from .send_request_to_irrelevant import send_request_to_irrelevant
 from .send_request_to_startup_event import send_request_to_startup_event
+from .classify_industry_of_company import classify_industry_of_company
 from .service_type import (
     GENERAL,
     NOT_RELEVANT,
@@ -9,8 +10,10 @@ from .service_type import (
     STARTUP_EVENT,
 )
 
+from crawler.company_dataclass import CompanyData
 
-def get_response_from_chatbot(user_input: str) -> str:
+
+def get_response_from_chatbot(user_input: str, company: CompanyData = None) -> str:
     """
     Get a response from the chatbot by sending a user input.
 
@@ -24,16 +27,24 @@ def get_response_from_chatbot(user_input: str) -> str:
     print(f"Classifying user input: {user_input}")
     category: str = classify_user_request(user_input=user_input)
     print(f"Category: {category}")
+
     if category == GENERAL:
         response = send_request_to_customer_service(user_input=user_input)
     elif category == STARTUP_EVENT:
         response = send_request_to_startup_event(user_input=user_input)
     elif category == SCHEDULING:
-        response = "Sure, let's schedule a meeting. When are you available?"
+        if company:
+            # If the company is provided, classify the industry
+            response = classify_industry_of_company(company=company)
+        else:
+            # Otherwise, return a general response
+            response = "General"
     elif category == NOT_RELEVANT:
         response = send_request_to_irrelevant(user_input=user_input)
     else:
         response = "Sorry, I don't understand. Please try again."
+
+    print(f"Response: {response}")
     return response
 
 

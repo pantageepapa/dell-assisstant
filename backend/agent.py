@@ -1,11 +1,14 @@
+from json import dump
+from os import getenv
+
 import openai
-import speech_recognition as sr
-from elevenlabs import generate, save, set_api_key
 import sounddevice as sd
 import soundfile as sf
+import speech_recognition as sr
 from dotenv import load_dotenv
-from os import getenv
-from json import dump
+from elevenlabs import generate, save, set_api_key
+
+from crawler.company_dataclass import CompanyData
 
 
 class Agent:
@@ -17,9 +20,11 @@ class Agent:
         self.message_history = []
         self.tts_voice = "Rachel"  # Default voice
         self.tts_model = "eleven_monolingual_v1"  # Default model
+        self.company_name = None
+        self.company: CompanyData = None
 
     def initialize(
-            self,
+        self,
     ) -> None:
         """Initialize the agent with input and output services."""
 
@@ -50,7 +55,7 @@ class Agent:
                 print(f"Error: {e}")
                 return ""
 
-    def say(self, text: str) -> None:
+    def say(self, text: str) -> int:
         """Output text through selected service."""
         try:
             if self.user_output_service == "console":
@@ -69,17 +74,16 @@ class Agent:
             print(f"TTS error: {e}")
             print("\n\33[7m" + "Assistant:" + "\33[0m" + f" {text}")
 
-    def conversation_cycle(self, user_input=None) -> str:
+    def conversation_cycle(self, user_input=None, company_name=None) -> str:
         """Run one conversation cycle."""
         from chatbot.get_response_from_chatbot import get_response_from_chatbot
 
-        if user_input is None:
-            user_input = self.get_user_input_mic()
         self.message_history.append({"role": "user", "content": user_input})
 
         if user_input:
-            response = get_response_from_chatbot(user_input)
-            self.say(response)
+            response = get_response_from_chatbot(
+                user_input=user_input, company=self.company
+            )
             self.message_history.append({"role": "assistant", "content": response})
             return response
 
@@ -87,22 +91,3 @@ class Agent:
         """Save conversation history to file."""
         with open("message_history.txt", "w") as f:
             dump(self.message_history, f)
-
-
-def main():
-    agent = Agent()
-    agent.initialize(
-        user_input_service="console",  # or "console"
-        user_output_service="console",  # or "console"
-    )
-
-    try:
-        while True:
-            agent.conversation_cycle()
-    except KeyboardInterrupt:
-        print("\nGoodbye!")
-        agent.save_history()
-
-
-if __name__ == "__main__":
-    main()

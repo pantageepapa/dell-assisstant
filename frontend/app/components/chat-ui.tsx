@@ -6,26 +6,100 @@ interface Message {
   sender: 'user' | 'bot';
 }
 
-const ChatUI: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
+const initialMessages: Message[] = [
+  {
+    id: 1,
+    text: "Hi! I am here to help you with any questions regarding the startup program. Do you have a startup?",
+    sender: 'bot'
+  }
+];
 
-  const handleSubmit = (e: FormEvent) => {
+const ChatUI: React.FC = () => {
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
+  const [input, setInput] = useState('');
+  const [isAwaitingStartupName, setIsAwaitingStartupName] = useState(false);
+
+  const handleStartupNameSubmission = async (startupName: string) => {
+    try {
+      fetch(
+        `http://127.0.0.1:8000/company?company_name=${encodeURIComponent(startupName)}`,
+        {
+          method: "POST",
+          headers: {
+            "accept": "application/json"
+          },
+          body: ""
+        }
+      );
+
+      return "Thank you! How can I help you?";
+    } catch (error) {
+      console.error("Error submitting startup name:", error);
+      return "I encountered an error processing your startup name. Could you please try again?";
+    }
+  };
+
+  const processResponse = async (userInput: string) => {
+    if (isAwaitingStartupName) {
+      const response = await handleStartupNameSubmission(userInput);
+      setIsAwaitingStartupName(false);
+      return response;
+    } else {
+      // Check if the user's response indicates they have a startup
+      const lowerInput = userInput.toLowerCase();
+      if (lowerInput.includes('yes') || lowerInput.includes('yeah') || lowerInput.includes('yep') || lowerInput.includes('sure')) {
+        setIsAwaitingStartupName(true);
+        return "What is the name of your startup?";
+      } else if (lowerInput.includes('no') || lowerInput.includes('nope') || lowerInput.includes('nah')) {
+        return "That's okay! How can I help you?";
+      }
+      
+      // Default flow for other responses
+      const queryParams = new URLSearchParams({ message: userInput });
+      const response = await fetch(
+        `http://localhost:8000/chat/text?${queryParams}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      return data.response;
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (input.trim() === '') return;
 
-    const newMessage: Message = {
+    // Add user message
+    const userMessage: Message = {
       id: messages.length + 1,
       text: input,
       sender: 'user',
     };
-
-    setMessages([...messages, newMessage]);
+    setMessages(prev => [...prev, userMessage]);
     setInput('');
+
+    try {
+      const botResponse = await processResponse(input);
+      
+      // Add bot response
+      const botMessage: Message = {
+        id: messages.length + 2,
+        text: botResponse,
+        sender: "bot",
+      };
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const handleButtonClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent event from bubbling up
+    e.stopPropagation();
   };
 
   return (

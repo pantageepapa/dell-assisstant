@@ -1,32 +1,18 @@
-from .service_type import (
-    NOT_RELEVANT,
-    GENERAL,
-    TECHNICAL_SUPPORT,
-    STARTUP_EVENT,
-    SCHEDULING,
-)
 from .send_prompt_to_openai import send_prompt_to_openai
 import json
+from crawler.company_dataclass import CompanyData
 
 OUTPUT_CATEGORIES: list = [
-    NOT_RELEVANT,
-    GENERAL,
-    TECHNICAL_SUPPORT,
-    STARTUP_EVENT,
-    SCHEDULING,
+    "Design",
+    "Healthcare",
+    "Finance",
+    "Technology",
+    "Irrelevant",
 ]
-
-
 PROMPT: str = (
-    f"You are a chatbot answering questions about DELL startup programs and you are going to route the user request to the responsible agent at DELL. "
-    f"Classify the following user input into one of these categories: {OUTPUT_CATEGORIES}. "
-    f"{GENERAL}: Anything related to the startup programs at DELL. "
-    f"{STARTUP_EVENT}: Anything related to startup events. "
-    f"{SCHEDULING}: Anything related to scheduling meetings. "
-    f"{NOT_RELEVANT}: Anything not related to the above categories. "
-    "User input: {user_input} "
+    f"Classify the following industry into one of these categories: {OUTPUT_CATEGORIES}. "
+    "Industry: {industry} "
     'Return ONLY a JSON response in this exact format: {{"category": "category_name"}}. '
-    "The category must be one of the exact categories listed above."
 )
 
 
@@ -50,7 +36,7 @@ def process_raw_response(raw_response: str) -> str:
         raise json.JSONDecodeError("Error: Invalid JSON response from OpenAI")
 
 
-def classify_user_request(user_input: str) -> str:
+def classify_industry_of_company(company: CompanyData) -> str:
     """
     Classify a user request into one of the predefined categories.
 
@@ -61,8 +47,8 @@ def classify_user_request(user_input: str) -> str:
         str: The classified category or error message
     """
     # Format the prompt with the user input
-    formatted_prompt = PROMPT.format(user_input=user_input)
-
+    formatted_prompt = PROMPT.format(industry=company.industries)
+    print(f"formatted_prompt: {formatted_prompt}")
     # Get response from OpenAI
     raw_response = send_prompt_to_openai(prompt=formatted_prompt)
 
@@ -84,5 +70,5 @@ if __name__ == "__main__":
 
     for user_input in test_inputs:
         print(f"\nInput: {user_input}")
-        response = classify_user_request(user_input)
+        response = classify_industry_of_company(user_input)
         print(f"Category: {response}")
