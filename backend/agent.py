@@ -7,6 +7,9 @@ from dotenv import load_dotenv
 from os import getenv
 from json import dump
 
+from crawler.company_dataclass import CompanyData
+from crawler.get_company_data import get_company_data
+
 
 class Agent:
     def __init__(self):
@@ -17,6 +20,8 @@ class Agent:
         self.message_history = []
         self.tts_voice = "Rachel"  # Default voice
         self.tts_model = "eleven_monolingual_v1"  # Default model
+        self.company_name = None
+        self.company: CompanyData = None
 
     def initialize(
         self,
@@ -88,6 +93,18 @@ class Agent:
         """Run one conversation cycle."""
         from chatbot.get_response_from_chatbot import get_response_from_chatbot
 
+        # Ask user for industry and stage if not set
+        if not self.company_name:
+            self.say(
+                "Hey there, I will help you with answering any questions regarding the startup program at DELL."
+                "In order to do that, I need to know more about your startup. What is the name of your startup?"
+            )
+            self.company_name = self.get_user_input()
+            self.company = get_company_data(self.company_name)
+            self.message_history.append({"role": "user", "content": self.company_name})
+
+        print(f"Company: {self.company_name}")
+        print(f"Data: {self.company}")
         user_input = self.get_user_input()
         self.message_history.append({"role": "user", "content": user_input})
 

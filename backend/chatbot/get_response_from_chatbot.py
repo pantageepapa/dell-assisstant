@@ -3,7 +3,6 @@ from .send_request_to_customer_service import send_request_to_customer_service
 from .send_request_to_startup_event import send_request_to_startup_event
 from .send_request_to_technical_support import send_request_to_technical_support
 from .send_request_to_irrelevant import send_request_to_irrelevant
-
 from .service_type import (
     GENERAL,
     NOT_RELEVANT,
