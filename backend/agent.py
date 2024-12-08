@@ -24,7 +24,7 @@ class Agent:
         self.company: CompanyData = None
 
     def initialize(
-            self,
+        self,
     ) -> None:
         """Initialize the agent with input and output services."""
 
@@ -78,15 +78,12 @@ class Agent:
         """Run one conversation cycle."""
         from chatbot.get_response_from_chatbot import get_response_from_chatbot
 
-        # Ask user for industry and stage if not set
-        if self.company:
-            # Do something with the company data
-            print('Do something with the company data')
-
         self.message_history.append({"role": "user", "content": user_input})
 
         if user_input:
-            response = get_response_from_chatbot(user_input)
+            response = get_response_from_chatbot(
+                user_input=user_input, company=self.company
+            )
             self.message_history.append({"role": "assistant", "content": response})
             return response
 

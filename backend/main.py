@@ -4,7 +4,7 @@ from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 
 from agent import Agent
-from backend.crawler.get_company_data import get_company_data
+from crawler.get_company_data import get_company_data
 
 app = FastAPI()
 app.add_middleware(
@@ -20,7 +20,7 @@ agent = Agent()
 agent.initialize()
 
 # Empty message_history.txt file
-open('message_history.txt', 'w').close()
+open("message_history.txt", "w").close()
 
 
 @app.get("/chat/text")
