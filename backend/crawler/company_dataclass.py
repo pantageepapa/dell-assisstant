@@ -6,22 +6,6 @@ from typing import Dict, Any
 
 
 @dataclass
-class Employee:
-    img: str
-    link: str
-    subtitle: str
-    title: str
-
-
-@dataclass
-class SimilarCompany:
-    link: str
-    subtitle: str
-    title: str
-    location: Optional[str] = None
-
-
-@dataclass
 class Update:
     likes_count: int
     text: str
@@ -31,14 +15,6 @@ class Update:
     post_url: str
     post_id: str
     images: Optional[List[str]] = None
-
-
-@dataclass
-class Funding:
-    last_round_date: Optional[datetime]
-    last_round_type: Optional[str]
-    rounds: Optional[int]
-    last_round_raised: Optional[str]
 
 
 @dataclass
@@ -54,13 +30,13 @@ class CompanyData:
     website: str
     crunchbase_url: Optional[str]
     company_id: str
-    employees: List[Employee]
+    employees: List[Dict[str, Any]]
     image: Optional[str]
     logo: str
-    similar: List[SimilarCompany]
+    similar: List[Dict[str, Any]]
     url: str
     updates: List[Update]
-    funding: Optional[Funding]
+    funding: Optional[Dict[str, Any]]
     investors: Optional[List[str]]
     description: str
     timestamp: datetime
@@ -74,30 +50,13 @@ class CompanyData:
         funding_data = snapshot.get("funding")
         funding = None
         if funding_data:
-            funding = Funding(
-                last_round_date=(
-                    datetime.fromisoformat(funding_data["last_round_date"])
-                    if funding_data.get("last_round_date")
-                    else None
-                ),
-                last_round_type=funding_data.get("last_round_type"),
-                rounds=funding_data.get("rounds"),
-                last_round_raised=funding_data.get("last_round_raised"),
-            )
+            funding = funding_data
 
         # Handle employees
-        employees = [Employee(**emp) for emp in snapshot.get("employees", [])]
+        employees = [emp for emp in snapshot.get("employees", [])]
 
         # Handle similar companies
-        similar = [
-            SimilarCompany(
-                link=comp["Links"],
-                subtitle=comp["subtitle"],
-                title=comp["title"],
-                location=comp.get("location"),
-            )
-            for comp in snapshot.get("similar", [])
-        ]
+        similar = [comp for comp in snapshot.get("similar", [])]
 
         # Handle updates
         updates = [

@@ -26,7 +26,7 @@ const ChatUI: React.FC = () => {
 
   const handleStartupNameSubmission = async (startupName: string) => {
     try {
-      const response = await fetch(
+      fetch(
         `http://127.0.0.1:8000/company?company_name=${encodeURIComponent(startupName)}`,
         {
           method: "POST",
@@ -36,8 +36,6 @@ const ChatUI: React.FC = () => {
           body: ""
         }
       );
-
-      await response.json();
       return { text: "Thank you! How can I help you?" };
     } catch (error) {
       console.error("Error submitting startup name:", error);
@@ -57,7 +55,7 @@ const ChatUI: React.FC = () => {
         return { text: "What is the name of your startup?" };
       } else if (lowerInput.includes('no') || lowerInput.includes('nope') || lowerInput.includes('nah')) {
         return { text: "I am here to help you with other things as well!" };
-      }
+      } 
       
       const queryParams = new URLSearchParams({ message: userInput });
       const response = await fetch(
