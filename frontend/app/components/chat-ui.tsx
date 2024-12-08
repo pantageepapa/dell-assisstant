@@ -48,61 +48,68 @@ const ChatUI: React.FC = () => {
       const response = await handleStartupNameSubmission(userInput);
       setIsAwaitingStartupName(false);
       return response;
-    } else {
-      const lowerInput = userInput.toLowerCase();
-      if (lowerInput.includes('yes') || lowerInput.includes('yeah') || lowerInput.includes('yep') || lowerInput.includes('sure')) {
-        setIsAwaitingStartupName(true);
-        return { text: "What is the name of your startup?" };
-      } else if (lowerInput.includes('no') || lowerInput.includes('nope') || lowerInput.includes('nah')) {
-        return { text: "I am here to help you with other things as well!" };
-      } 
-      
-      const queryParams = new URLSearchParams({ message: userInput });
-      const response = await fetch(
-        `http://localhost:8000/chat/text?${queryParams}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await response.json();
-      
-      // Match consultant based on response
-      if (data.response === "Healthcare") {
-        return { 
-          text: "I'll help you schedule a meeting with our Digital Health expert.", 
-          calendar: true,
-          consultantId: 1  // Elsa's ID
-        };
-      } else if (data.response === "Finance") {
-        return { 
-          text: "I'll help you schedule a meeting with our Finance expert.", 
-          calendar: true,
-          consultantId: 2  // Jaeyoon's ID
-        };
-      } else if (data.response === "Design") {
-        return {
-          text: "I'll help you schedule a meeting with our Design expert.",
-          calendar: true,
-          consultantId: 3  // Moritz's ID
-        };
-      } else if (data.response === "Technology") {
-        return {
-          text: "I'll help you schedule a meeting with our Technology expert.",
-          calendar: true,
-          consultantId: 4  // Daniel's ID
-        };
-      } else if (data.response === "General") {
-        return { text: "I'll help you schedule a meeting with one of our generalist consultants." ,
-           calendar: true,
-          consultantId: 4  // Daniel's ID
-        };
-      }
-      
-      return { text: data.response };
     }
+
+    const lowerInput = userInput.toLowerCase();
+    if (lowerInput.includes('yes') || lowerInput.includes('yeah') || lowerInput.includes('yep') || lowerInput.includes('sure')) {
+      setIsAwaitingStartupName(true);
+      return { text: "What is the name of your startup?" };
+    } 
+    
+    if (lowerInput.includes('no') || lowerInput.includes('nope') || lowerInput.includes('nah')) {
+      return { text: "I am here to help you with other things as well!" };
+    } 
+    
+    const queryParams = new URLSearchParams({ message: userInput });
+    const response = await fetch(
+      `http://localhost:8000/chat/text?${queryParams}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+    
+    // Match consultant based on response
+    if (data.response === "Healthcare") {
+      return { 
+        text: "I'll help you schedule a meeting with our Digital Health expert.", 
+        calendar: true,
+        consultantId: 1  // Elsa's ID
+      };
+    }
+    if (data.response === "Finance") {
+      return { 
+        text: "I'll help you schedule a meeting with our Finance expert.", 
+        calendar: true,
+        consultantId: 2  // Jaeyoon's ID
+      };
+    }
+    if (data.response === "Design") {
+      return {
+        text: "I'll help you schedule a meeting with our Design expert.",
+        calendar: true,
+        consultantId: 3  // Moritz's ID
+      };
+    }
+    if (data.response === "Technology") {
+      return {
+        text: "I'll help you schedule a meeting with our Technology expert.",
+        calendar: true,
+        consultantId: 4  // Daniel's ID
+      };
+    }
+    if (data.response === "General") {
+      return {
+        text: "I'll help you schedule a meeting with one of our generalist consultants.",
+        calendar: true,
+        consultantId: 4  // Daniel's ID
+      };
+    }
+    
+    return { text: data.response };
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -119,7 +126,6 @@ const ChatUI: React.FC = () => {
 
     try {
       const botResponse = await processResponse(input);
-      
       const botMessage: Message = {
         id: messages.length + 2,
         text: botResponse.text,
@@ -127,18 +133,26 @@ const ChatUI: React.FC = () => {
         calendar: botResponse.calendar,
         consultantId: botResponse.consultantId
       };
-      setMessages((prev) => [...prev, botMessage]);
+      setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error("Error:", error);
     }
   };
-
-  const handleButtonClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const renderMarkdown = (text: string) => {
+    return (
+      <div
+        dangerouslySetInnerHTML={{
+          __html: text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n\n/g, '<br/><br/>')
+            .replace(/(\d+)\.\s/g, '<br/>$1. ')
+        }}
+      />
+    );
   };
 
   return (
-    <div className="chat-container" style={styles.chatContainer} onClick={handleButtonClick}>
+    <div className="chat-container" style={styles.chatContainer}>
       <div className="chat-messages" style={styles.messages}>
         {messages.map((message) => (
           <div key={message.id} style={styles.messageContainer}>
@@ -150,7 +164,7 @@ const ChatUI: React.FC = () => {
                 backgroundColor: message.sender === 'user' ? '#9fc5e8' : '#f1f1f1',
               }}
             >
-              {message.text}
+              {renderMarkdown(message.text)}
             </div>
             {message.calendar && message.consultantId && (
               <div style={styles.calendar}>
