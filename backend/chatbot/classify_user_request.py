@@ -21,7 +21,6 @@ PROMPT: str = (
     f"You are a chatbot answering questions about DELL startup programs and you are going to route the user request to the responsible agent at DELL. "
     f"Classify the following user input into one of these categories: {OUTPUT_CATEGORIES}. "
     f"{GENERAL}: Anything related to the startup programs at DELL. "
-    f"{TECHNICAL_SUPPORT}: Anything related to technical support of startups. "
     f"{STARTUP_EVENT}: Anything related to startup events. "
     f"{SCHEDULING}: Anything related to scheduling meetings. "
     f"{NOT_RELEVANT}: Anything not related to the above categories. "
