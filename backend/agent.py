@@ -62,7 +62,7 @@ class Agent:
         try:
             text = text.replace("*", "")
             # Handle ElevenLabs output
-            print('Generating TTS...')
+            print("Generating TTS...")
             audio = generate(text=text, voice=self.tts_voice, model=self.tts_model)
             save(audio, "output.mp3")
 
@@ -76,16 +76,18 @@ class Agent:
 
     def conversation_cycle(self, user_input=None, company_name=None) -> str:
         """Run one conversation cycle."""
+        if user_input is None:
+            user_input = self.get_user_input_mic()
 
+        response = get_response_from_chatbot(
+            user_input=user_input,
+            company=self.company,
+            message_history="".join(json.dumps(self.message_history)),
+        )
 
-        if user_input:
-            response = get_response_from_chatbot(
-                user_input=user_input, company=self.company, message_history=''.join(json.dumps(self.message_history))
-            )
-
-            self.message_history.append({"role": "user", "content": user_input})
-            self.message_history.append({"role": "assistant", "content": response})
-            return response
+        self.message_history.append({"role": "user", "content": user_input})
+        self.message_history.append({"role": "assistant", "content": response})
+        return response
 
     def save_history(self) -> None:
         """Save conversation history to file."""
