@@ -19,9 +19,9 @@ class Agent:
         self.tts_model = "eleven_monolingual_v1"  # Default model
 
     def initialize(
-        self,
-        user_input_service: str = "console",
-        user_output_service: str = "console",
+            self,
+            user_input_service: str = "console",
+            user_output_service: str = "console",
     ) -> None:
         """Initialize the agent with input and output services."""
         # Validate services
@@ -44,10 +44,8 @@ class Agent:
             load_dotenv()
             set_api_key(getenv("ELEVENLABS_API_KEY"))
 
-    def get_user_input(self) -> str:
+    def get_user_input_mic(self) -> str:
         """Get user input through selected service."""
-        if self.user_input_service == "console":
-            return input("\n\33[42m" + "User:" + "\33[0m" + " ")
 
         # Handle speech input with Whisper
         with self.mic as source:
@@ -84,17 +82,19 @@ class Agent:
             print(f"TTS error: {e}")
             print("\n\33[7m" + "Assistant:" + "\33[0m" + f" {text}")
 
-    def conversation_cycle(self) -> None:
+    def conversation_cycle(self, user_input=None) -> str:
         """Run one conversation cycle."""
         from chatbot.get_response_from_chatbot import get_response_from_chatbot
 
-        user_input = self.get_user_input()
+        if user_input is None:
+            user_input = self.get_user_input_mic()
         self.message_history.append({"role": "user", "content": user_input})
 
         if user_input:
             response = get_response_from_chatbot(user_input)
             self.say(response)
             self.message_history.append({"role": "assistant", "content": response})
+            return response
 
     def save_history(self) -> None:
         """Save conversation history to file."""

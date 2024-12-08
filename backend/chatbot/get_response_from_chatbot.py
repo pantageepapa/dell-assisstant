@@ -1,3 +1,4 @@
+from backend.chatbot.send_prompt_to_openai import send_prompt_to_openai
 from .classify_user_request import classify_user_request
 from .send_request_to_customer_service import send_request_to_customer_service
 from .send_request_to_startup_event import send_request_to_startup_event
