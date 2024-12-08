@@ -1,5 +1,5 @@
-from backend.crawler.company_dataclass import CompanyData
-from backend.chatbot.send_prompt_to_openai import send_prompt_to_openai
+from crawler.company_dataclass import CompanyData
+from chatbot.send_prompt_to_openai import send_prompt_to_openai
 
 PROMPT = """You are a professional customer service representative at Dell Technologies. Your goal is to provide helpful, accurate, and courteous support to customers regarding Dell's startup program. 
 Use Dell's technical knowledge to assist customers with their questions. If the customer has supplied information about their startup, make sure to relate information with their company.
@@ -29,7 +29,9 @@ The startup is located in {company_location} and has {company_employees} employe
 """
 
 
-def send_request_to_customer_service(user_input: str, message_history: str, company: CompanyData = None) -> str:
+def send_request_to_customer_service(
+    user_input: str, message_history: str, company: CompanyData = None
+) -> str:
     """
     Send a user request to the customer service chatbot and get a response.
 
@@ -47,9 +49,15 @@ def send_request_to_customer_service(user_input: str, message_history: str, comp
             company_location=company.locations,
             company_employees=company.company_size,
         )
-        formatted_prompt = PROMPT.format(user_input=user_input,customer_company=company_prompt, message_history=message_history)
+        formatted_prompt = PROMPT.format(
+            user_input=user_input,
+            customer_company=company_prompt,
+            message_history=message_history,
+        )
     else:
-        formatted_prompt = PROMPT.format(user_input=user_input,customer_company="", message_history=message_history)
+        formatted_prompt = PROMPT.format(
+            user_input=user_input, customer_company="", message_history=message_history
+        )
 
     # Get response from OpenAI
     response: str = send_prompt_to_openai(prompt=formatted_prompt)

@@ -64,10 +64,10 @@ class Agent:
             # Handle ElevenLabs output
             print("Generating TTS...")
             audio = generate(text=text, voice=self.tts_voice, model=self.tts_model)
-            save(audio, "output.mp3")
+            save(audio, "../frontend/public/resources/Audio-Testfile.mp3")
 
             # Play the audio
-            data, fs = sf.read("output.mp3")
+            data, fs = sf.read("../frontend/public/resources/Audio-Testfile.mp3")
             sd.play(data, fs)
             sd.wait()
         except Exception as e:
