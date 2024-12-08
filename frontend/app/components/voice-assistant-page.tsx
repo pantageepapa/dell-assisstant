@@ -107,13 +107,13 @@ const VoiceAssistantPage: React.FC = () => {
               ${status === 'listening' ? 'bg-red-500 hover:bg-red-600' : 'bg-gray-400'}`}
           >
             {status === 'listening' ? (
-              <IoIosMic size={24} />
+              <IoIosMic size={24} color='white' />
             ) : status === 'thinking' ? (
-              <IoIosMicOff size={24} />
+              <IoIosMicOff size={24} color='white' />
             ) : status === 'speaking' ? (
-              <HiMiniSpeakerWave size={24} />
+              <HiMiniSpeakerWave size={24} color='white' />
             ) : (
-              <PiRecordFill size={24} />
+              <PiRecordFill size={24} color='white' />
             )}
           </button>
         </div>
