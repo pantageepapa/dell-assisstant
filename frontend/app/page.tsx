@@ -6,6 +6,7 @@ import CornerButton from "./components/corner-button";
 import ChatUI from "./components/chat-ui";
 import TopNavigationBar from "./components/top-navigation-bar";
 import ConsultantsPage from "./components/ConsultantsPage";
+import VirtualAssistantUI from "./components/virtual-assistant-page";
 
 const Home: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -41,7 +42,7 @@ const Home: React.FC = () => {
       case "voice":
         return <div>Voice Assistant Content</div>; // Replace with your actual component or content
       case "virtual":
-        return <div>Virtual Assistant Content</div>; // Replace with your actual component or content
+        return <VirtualAssistantUI />; // Replace with your actual component or content
       case "consulting":
         return <ConsultantsPage />;
       default:
