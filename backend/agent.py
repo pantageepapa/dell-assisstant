@@ -55,7 +55,7 @@ class Agent:
                 print(f"Error: {e}")
                 return ""
 
-    def say(self, text: str) -> None:
+    def say(self, text: str) -> int:
         """Output text through selected service."""
         try:
             if self.user_output_service == "console":
@@ -95,7 +95,6 @@ class Agent:
 
         if user_input:
             response = get_response_from_chatbot(user_input)
-            self.say(response)
             self.message_history.append({"role": "assistant", "content": response})
             return response
 
@@ -103,22 +102,3 @@ class Agent:
         """Save conversation history to file."""
         with open("message_history.txt", "w") as f:
             dump(self.message_history, f)
-
-
-def main():
-    agent = Agent()
-    agent.initialize(
-        user_input_service="console",  # or "console"
-        user_output_service="console",  # or "console"
-    )
-
-    try:
-        while True:
-            agent.conversation_cycle()
-    except KeyboardInterrupt:
-        print("\nGoodbye!")
-        agent.save_history()
-
-
-if __name__ == "__main__":
-    main()
