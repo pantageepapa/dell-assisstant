@@ -1,5 +1,5 @@
-from backend.crawler.company_dataclass import CompanyData
-from backend.chatbot.send_prompt_to_openai import send_prompt_to_openai
+from crawler.company_dataclass import CompanyData
+from chatbot.send_prompt_to_openai import send_prompt_to_openai
 
 PROMPT = """You are a professional customer service representative at Dell Technologies. Your goal is to provide helpful, accurate, and courteous support to customers regarding Dell's startup program. 
 Use Dell's technical knowledge to assist customers with their questions. If the customer has supplied information about their startup, make sure to relate information with their company.

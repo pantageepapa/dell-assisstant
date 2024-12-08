@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import AudioVisualizer from './audio-visualizer';
 import Image from 'next/image';
 import { IoIosMic } from "react-icons/io";
-import { PiRecordFill } from "react-icons/pi";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import axios from 'axios';
 
@@ -42,10 +41,8 @@ const VoiceAssistantPage: React.FC = () => {
     if (status === 'welcome' || status === 'idle') {
       setStatus('listening');
       try {
-        console.log("Starting recording...");
-        const response = await axios.get('http://localhost:8000/chat/mic'); // Start recording API call
-        setTimeout(() => setStatus('speaking'), 3000); // Simulate a 3-second delay
-        console.log("Recording started:", response.data);
+        await axios.get('http://localhost:8000/chat/mic'); // Start recording API call
+        setTimeout(() => setStatus('speaking'), 1000); // Simulate a 1-second delay
       } catch (error) {
         console.error('Error starting the recording:', error);
       }
@@ -119,7 +116,7 @@ const VoiceAssistantPage: React.FC = () => {
             ) : status === 'speaking' ? (
               <HiMiniSpeakerWave size={24} color='white' />
             ) : (
-              <PiRecordFill size={24} color='white' />
+              <IoIosMic size={24} color='white' />
             )}
           </button>
         </div>
